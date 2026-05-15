@@ -1,0 +1,104 @@
+{
+  "info": {
+    "_postman_id": "c3d4e5f6-students-api-verified-portal",
+    "name": "Verified Portal — Students API",
+    "description": "Set `baseUrl` and `accessToken` (from **Login**). **Create student with certificate** uses **form-data** and field name **`certificate`** (File). Allowed: PDF, PNG, JPG, JPEG, WEBP (max 15 MB).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000" },
+    { "key": "accessToken", "value": "" },
+    { "key": "studentInternalId", "value": "" },
+    { "key": "publicVerificationId", "value": "TESTQEW2026" }
+  ],
+  "item": [
+    {
+      "name": "Create student + certificate (multipart)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "fullName", "description": "Required", "type": "text", "value": "Jane Student" },
+            { "key": "studentId", "description": "Optional; omit to auto-generate VP-…", "type": "text", "value": "TESTQEW2026" },
+            { "key": "mobile", "type": "text", "value": "6666666666" },
+            { "key": "email", "description": "Optional; must be valid if set", "type": "text", "value": "jane@example.com" },
+            { "key": "courseName", "type": "text", "value": "new course" },
+            { "key": "instituteName", "type": "text", "value": "svit" },
+            { "key": "isVerified", "description": "true / false", "type": "text", "value": "true" },
+            {
+              "key": "certificate",
+              "description": "Required field name for Multer. Select a file after import.",
+              "type": "file",
+              "src": []
+            }
+          ]
+        },
+        "url": "{{baseUrl}}/api/students",
+        "description": "Do **not** set Content-Type manually — Postman sets multipart boundary. After import, click the **certificate** row and **Select Files**."
+      },
+      "response": []
+    },
+    {
+      "name": "Create student (JSON only, no file)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+        },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"Jane Student\",\n  \"studentId\": \"TESTQEW2026\",\n  \"mobile\": \"6666666666\",\n  \"email\": \"jane@example.com\",\n  \"courseName\": \"new course\",\n  \"instituteName\": \"svit\",\n  \"isVerified\": true\n}"
+        },
+        "url": "{{baseUrl}}/api/students",
+        "description": "`certificateUrl` will be null. Use multipart request to upload a file."
+      },
+      "response": []
+    },
+    {
+      "name": "List students",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+        },
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/students?limit=100",
+        "description": "ADMIN / HR only."
+      },
+      "response": []
+    },
+    {
+      "name": "Get student by internal id",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+        },
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/students/{{studentInternalId}}",
+        "description": "Set collection variable `studentInternalId` to the UUID from create response (`student.id`)."
+      },
+      "response": []
+    },
+    {
+      "name": "Public verify by verification id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/students/by-verification-id/{{publicVerificationId}}",
+        "description": "No auth. Replace `publicVerificationId` with `student.studentId` (e.g. TESTQEW2026). Returns `certificates` if `certificateUrl` is set."
+      },
+      "response": []
+    }
+  ]
+}

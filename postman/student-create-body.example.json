@@ -1,0 +1,9 @@
+{
+  "fullName": "Jane Student",
+  "studentId": "TESTQEW2026",
+  "mobile": "6666666666",
+  "email": "jane@example.com",
+  "courseName": "new course",
+  "instituteName": "svit",
+  "isVerified": true
+}

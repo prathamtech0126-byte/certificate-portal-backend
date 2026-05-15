@@ -1,0 +1,125 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-user-api-verified-portal",
+    "name": "Verified Portal — User API",
+    "description": "User routes mounted at `/api`. Set `baseUrl` (e.g. http://localhost:5000) to match your server PORT.\n\n**Cookies:** Login sets `accessToken` and `refreshToken` httpOnly cookies. Postman stores them per domain if you use the same `baseUrl` for follow-up requests.\n\n**Refresh / logout:** Can use cookies from login, or send `refreshToken` in JSON body / `Authorization: Bearer <refreshToken>` for refresh.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    }
+  ],
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane@example.com\",\n  \"password\": \"secret12\",\n  \"role\": \"HR\"\n}"
+        },
+        "url": "{{baseUrl}}/api/users/register",
+        "description": "**201** `{ \"ok\": true, \"user\": { id, name, email, role, isActive, createdAt, updatedAt } }`\n\n`role` optional: `\"ADMIN\"` | `\"HR\"` (default HR in service if omitted)."
+      },
+      "response": []
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"jane@example.com\",\n  \"password\": \"secret12\"\n}"
+        },
+        "url": "{{baseUrl}}/api/users/login",
+        "description": "**200** Sets cookies `accessToken`, `refreshToken`. Body:\n`{ \"ok\": true, \"message\": \"Login successful\", \"user\": {...}, \"accessToken\": \"jwt...\" }`"
+      },
+      "response": []
+    },
+    {
+      "name": "Refresh access token",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"<paste refresh token from login response cookie or use cookie jar after login>\"\n}"
+        },
+        "url": "{{baseUrl}}/api/users/refresh-token",
+        "description": "Refresh token source (first match): cookie `refreshToken`, **or** body `refreshToken`, **or** `Authorization: Bearer <refreshToken>`.\n\n**200** `{ \"ok\": true, \"message\": \"Token refreshed successfully\", \"accessToken\": \"jwt...\" }` — also sets `accessToken` cookie."
+      },
+      "response": []
+    },
+    {
+      "name": "Refresh access token (Bearer)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <refreshToken>"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": "{{baseUrl}}/api/users/refresh-token",
+        "description": "Same as refresh; uses Bearer header instead of body."
+      },
+      "response": []
+    },
+    {
+      "name": "Logout",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": "{{baseUrl}}/api/users/logout",
+        "description": "Uses cookie `refreshToken` only. Clears auth cookies.\n\n**200** `{ \"ok\": true, \"message\": \"Logged out successfully\" }`"
+      },
+      "response": []
+    },
+    {
+      "name": "Change password",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"jane@example.com\",\n  \"currentPassword\": \"secret12\",\n  \"newPassword\": \"newsecret12\"\n}"
+        },
+        "url": "{{baseUrl}}/api/users/change-password",
+        "description": "`newPassword` must differ from `currentPassword`.\n\n**200** `{ \"ok\": true, \"message\": \"Password changed successfully. Please login again.\" }` — all refresh tokens for user are revoked."
+      },
+      "response": []
+    }
+  ]
+}
