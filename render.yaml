@@ -1,0 +1,9 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# If you created the Web Service manually, set the same commands in the dashboard
+# (Build + Start) or link this repo as a Blueprint so Render applies this file.
+services:
+  - type: web
+    name: verified-portal-backend
+    runtime: node
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
