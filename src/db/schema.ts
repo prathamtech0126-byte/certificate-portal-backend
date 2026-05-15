@@ -103,3 +103,23 @@ export const verificationLogs = pgTable("verification_logs", {
 
   ipAddress: text("ipAddress"),
 });
+
+/* =========================
+   CONTACT ENQUIRIES (public form)
+========================= */
+
+export const contactEnquiries = pgTable("contact_enquiries", {
+  id: text("id").primaryKey(),
+
+  fullName: text("fullName").notNull(),
+
+  email: text("email").notNull(),
+
+  subject: text("subject"),
+
+  message: text("message").notNull(),
+
+  ipAddress: text("ipAddress"),
+
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});

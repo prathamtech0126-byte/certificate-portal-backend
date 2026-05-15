@@ -7,6 +7,7 @@ import { errorMiddleware } from "./shared/middlewares/error.middleware";
 import userRoutes from "./modules/user/user.routes";
 import studentsRoutes from "./modules/students/students.routes";
 import verificationRoutes from "./modules/verification/verification.routes";
+import contactRoutes from "./modules/contact/contact.routes";
 import { env } from "./config/env";
 import { requestLogger } from "./shared/middlewares/request-logger.middleware";
 
@@ -37,6 +38,7 @@ export function createApp() {
   app.use("/api", userRoutes);
   app.use("/api", studentsRoutes);
   app.use("/api", verificationRoutes);
+  app.use("/api", contactRoutes);
   app.use(errorMiddleware);
 
   return app;
